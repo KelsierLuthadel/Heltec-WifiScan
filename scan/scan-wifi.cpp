@@ -5,7 +5,7 @@
 
 WiFiScan::WiFiScan(Display* display)
 {
-  WiFi.mode(WIFI_STA);
+  setMode(WIFI_STA);
 
   this->autoConnect = false;
   this->display = display;
@@ -13,7 +13,7 @@ WiFiScan::WiFiScan(Display* display)
 
 WiFiScan::WiFiScan(const char* bssid, const char* password, Display* display)
 {
-  WiFi.mode(WIFI_STA);
+  setMode(WIFI_STA);
 
   this->setBSSID(bssid);
   this->setPassword(password);
@@ -120,6 +120,11 @@ void WiFiScan::scan(bool showStrength, bool showChannel)
 		delay(3000);
 		display->clear();
 	}
+}
+
+void WiFiScan::setMode(wifi_mode_t type)
+{
+  WiFi.mode(type);
 }
 
 void WiFiScan::setAutoConnect(bool autoConnect)

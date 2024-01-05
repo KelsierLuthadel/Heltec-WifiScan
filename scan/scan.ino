@@ -4,9 +4,11 @@
 #include "display.h"
 #include "scan-wifi.h"
 
+// Create a screen. Setting the parameter to true also outputs text to the serial port )
 Display screen(true);
-WiFiScan wifi(&screen);
 
+// Enable the WiFi adapter, all output is sent to the screen
+WiFiScan wifi(&screen);
 
 // Sleep flags
 bool resendflag=false;
@@ -32,18 +34,21 @@ void interrupt_handle(void)
 	}
 }
 
+// Turn the onboard LED on
 void ledOn()
 {
   pinMode(LED ,OUTPUT);
 	digitalWrite(LED, HIGH);  
 }
 
+// Turn the onboard LED off
 void ledOff()
 {
   pinMode(LED ,OUTPUT);
 	digitalWrite(LED, LOW);  
 }
 
+// Turn on Vext power supply
 void VextON(void)
 {
   pinMode(Vext,OUTPUT);
@@ -51,17 +56,29 @@ void VextON(void)
   
 }
 
-void VextOFF(void) //Vext default OFF
+// Turn off Vext power supply
+void VextOFF(void) 
 {
   pinMode(Vext,OUTPUT);
   digitalWrite(Vext, HIGH);
 }
 
+//The chip ID is essentially its MAC address(length: 6 bytes).
+String getMac()
+{
+  uint64_t chipid=ESP.getEfuseMac();
+  return "MAC:" + String(chipid, HEX); 
+}
+
 void setup()
 {
 	Serial.begin(115200);
+
+  //OLED use Vext power supply, Vext must be turned ON before OLED initialition.
 	VextON();
 	delay(100);
+
+  // Initialise the display and show the logo  
   screen.init();
   screen.clear();
   screen.logo();
@@ -69,12 +86,10 @@ void setup()
 	delay(2000);
   screen.clear();
 	
+  // Disconnect from any previous WiFi connections
   wifi.disconnect();
 	  
-	uint64_t chipid=ESP.getEfuseMac();//The chip ID is essentially its MAC address(length: 6 bytes).
-
-  String macAddress = "MAC:" + String(chipid, HEX);  
-  screen.outputln(0, 0, macAddress, true);
+  screen.outputln(0, 0, getMac(), true);
 
   delay(2000);
 

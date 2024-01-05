@@ -3,6 +3,7 @@
 
 #include "Arduino.h"
 #include "display.h"
+// #include "esp_wifi_types.h"
 
 class WiFiScan
 {
@@ -17,6 +18,7 @@ public:
 
   void scan(bool showStrength = false, bool showChannel = false);
 
+  void setMode(wifi_mode_t type);
   void setAutoConnect(bool autoConnect);
   boolean setBSSID(const char* bssid);
   boolean setPassword(const char* password);
